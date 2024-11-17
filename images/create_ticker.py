@@ -13,37 +13,6 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
         base_url: Base URL for the image files
         output_file: Output HTML file name
     """
-    # CSS for the ticker animation
-    css = """
-<style>
-@keyframes ticker-kf {
-    0% {
-        /* 10rem for each logo x 6 logos total = -60rem */
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-60rem);
-    }
-}
-
-.img-ticker {
-    display: flex;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    animation: ticker-kf 10s linear infinite;
-}
-
-.tickerlogo {
-    width: 8rem;
-    flex: none;
-    margin: 0 1rem 0 1rem;
-    align-self: flex-start;
-    max-width: 100%;
-    height: auto;
-}
-</style>
-"""
-    
     # Get all SVG and PNG files from the directory
     image_files = []
     for extension in ['*.svg', '*.png']:
@@ -58,19 +27,54 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
         print(f"Warning: No SVG or PNG files found in {images_dir}")
         return
     
+    # Calculate the total translation distance based on number of logos
+    # Each logo takes 10rem of space (8rem width + 2rem margins)
+    total_logos = len(image_files)
+    translation_distance = total_logos * 10
+
+    # CSS for the ticker animation with dynamic translation
+    css = f"""
+<style>
+@keyframes ticker-kf {{
+    0% {{
+        transform: translateX(0);
+    }}
+    100% {{
+        transform: translateX(-{translation_distance}rem);
+    }}
+}}
+
+.img-ticker {{
+    display: flex;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    animation: ticker-kf 10s linear infinite;
+}}
+
+.tickerlogo {{
+    width: 8rem;
+    flex: none;
+    margin: 0 1rem 0 1rem;
+    align-self: flex-start;
+    max-width: 100%;
+    height: auto;
+}}
+</style>
+"""
+    
     # Generate image tags, each on a new line with proper indentation
     image_tags = []
     for image_file in image_files:
         # Create the full URL by joining base_url and file path
         full_url = f"{base_url.rstrip('/')}/{image_file}"
-        # Get file extension for alt text
+        # Get file name for alt text
         file_name = Path(image_file).stem
         # Create the image tag with escaped URL and alt text, indented with 12 spaces
         image_tag = f'            <img class="tickerlogo" src="{html.escape(full_url)}" alt="{html.escape(file_name)} logo">'
         image_tags.append(image_tag)
     
     # Double the images to ensure smooth infinite scrolling
-    #image_tags = image_tags * 2
+    image_tags = image_tags * 2
     
     # Join image tags with newlines
     images_html = '\n'.join(image_tags)
@@ -85,7 +89,6 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
 {images_html}
 </div>
 </div>
-
 """
     
     # Create output directory if it doesn't exist
