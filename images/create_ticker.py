@@ -5,6 +5,7 @@ import html
 def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "logo-ticker.html"):
     """
     Generate an HTML file with an infinitely scrolling logo ticker.
+    Each image tag will be on a separate line for better readability.
     
     Args:
         images_dir: Directory containing SVG files
@@ -47,19 +48,22 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
         relative_path = str(file.relative_to(images_dir))
         svg_files.append(relative_path)
     
-    # Generate image tags
+    # Generate image tags, each on a new line with proper indentation
     image_tags = []
     for svg_file in svg_files:
         # Create the full URL by joining base_url and file path
         full_url = f"{base_url.rstrip('/')}/{svg_file}"
-        # Create the image tag with escaped URL
-        image_tag = f'<img class="tickerlogo" src="{html.escape(full_url)}">'
+        # Create the image tag with escaped URL, indented with 12 spaces
+        image_tag = f'            <img class="tickerlogo" src="{html.escape(full_url)}">'
         image_tags.append(image_tag)
     
     # Double the images to ensure smooth infinite scrolling
     image_tags = image_tags * 2
     
-    # Generate the complete HTML
+    # Join image tags with newlines
+    images_html = '\n'.join(image_tags)
+    
+    # Generate the complete HTML with proper formatting
     html_content = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -73,7 +77,7 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
         <!-- The slider itself is a flex grid -->
         <div class="img-ticker">
             <!-- Each image is a grid column with width 8rem and horizontal margin 2rem = 10rem -->
-            {''.join(image_tags)}
+{images_html}
         </div>
     </div>
 </body>
