@@ -30,7 +30,7 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
     # Calculate the total translation distance based on number of logos
     # Each logo takes 10rem of space (8rem width + 2rem margins)
     total_logos = len(image_files)
-    translation_distance = total_logos * 10
+    translation_distance = 100 #total_logos * 10
 
     # CSS for the ticker animation with dynamic translation
     css = f"""
