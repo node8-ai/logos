@@ -49,13 +49,15 @@ def generate_logo_ticker(images_dir: str, base_url: str, output_file: str = "log
     margin-left: -1rem;
     margin-right: -1rem;
     animation: ticker-kf {total_logos}s linear infinite;
+    align-items: flex-start; /* This ensures all items align to the top */
+
 }}
 
 .tickerlogo {{
     width: 8rem;
     flex: none;
     margin: 0 1rem 0 1rem;
-    align-self: flex-start;
+    align-self: flex-start; /* This ensures individual logos align to the top */
     max-width: 100%;
     height: auto;
 }}
